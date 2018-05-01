@@ -5,8 +5,9 @@ from pygame.locals import *
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = self.load_image('player-ship.jpeg', -1)
+        self.image = self.load_image('player-ship.jpeg', -1)
         self.image = pygame.transform.scale(self.image, (50, 50))
+        self.rect = self.image.get_rect()
         self.screen = pygame.display.get_surface()
         self.area = self.screen.get_rect()
         self.size = self.image.get_size()
@@ -24,7 +25,7 @@ class Player(pygame.sprite.Sprite):
             if colorkey is -1:
                 colorkey = image.get_at((0,0))
             image.set_colorkey(colorkey, pygame.RLEACCEL)
-        return image, image.get_rect()
+        return image
 
     def move_left(self):
         self.movepos[0] = self.movepos[0] - (self.speed)
@@ -38,9 +39,11 @@ class Player(pygame.sprite.Sprite):
     def move_down(self):
         self.movepos[1] = self.movepos[1] + (self.speed)
 
+    def shoot(self):
+        print('pew pew')
+
     def update(self):
         newpos = self.rect.move(self.movepos)
-        print(self.area, newpos)
         if self.area.contains(newpos):
             self.rect = newpos
         pygame.event.pump()
