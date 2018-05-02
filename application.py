@@ -1,5 +1,7 @@
 from player import Player
 from bullet import Bullet
+from enemy import Enemy
+import random
 
 import pygame
 from pygame.locals import *
@@ -13,10 +15,19 @@ class Application:
         self.clock = pygame.time.Clock()
         self.color_bg = pygame.Color("gray")
 
-        self.player = Player()
-        self.playersprite = pygame.sprite.RenderPlain((self.player))
+        self.all_sprites = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
+        self.player_sprite = pygame.sprite.Group()
+
+        player_pos = (100, 100)
+        self.player = Player(player_pos, self.all_sprites, self.player_sprite)
         self.bullets = pygame.sprite.Group()
         self.bullet_timer = .1
+
+        for i in range(15):
+            pos = (random.randrange(30, 750), random.randrange(500))
+            Enemy(pos, self.all_sprites, self.enemies)
 
     def run(self):
         print('run')
@@ -28,12 +39,11 @@ class Application:
 
     def draw(self):
         self.screen.fill(self.color_bg)
-        self.playersprite.update()
-        self.playersprite.draw(self.screen)
+        self.all_sprites.draw(self.screen)
         pygame.display.flip()
 
     def run_logic(self, dt):
-        # self.all_sprites.update(dt)
+        self.all_sprites.update(dt)
         self.bullet_timer -= dt
         # if self.bullet_timer <= 0:
         # hits = pg.sprite.groupcollide(self.enemies, self.bullets, False, True)

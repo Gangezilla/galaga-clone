@@ -3,7 +3,8 @@ import os
 from pygame.locals import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, pos, *sprite_groups):
+        super().__init__(*sprite_groups)
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image('player-ship.jpeg', -1)
         self.image = pygame.transform.scale(self.image, (50, 50))
@@ -42,7 +43,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         print('pew pew')
 
-    def update(self):
+    def update(self, dt):
         newpos = self.rect.move(self.movepos)
         if self.area.contains(newpos):
             self.rect = newpos
