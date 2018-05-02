@@ -13,10 +13,9 @@ class Player(pygame.sprite.Sprite):
         self.area = self.screen.get_rect()
         self.size = self.image.get_size()
         self.speed = 10
-        self.reinit()
 
-    def reinit(self): # on getting hit
-        self.movepos = [0,0]
+    # def reinit(self): # on getting hit
+    #     self.movepos = [0,0]
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('data', name)
@@ -29,22 +28,26 @@ class Player(pygame.sprite.Sprite):
         return image
 
     def move_left(self):
-        self.movepos[0] = self.movepos[0] - (self.speed)
+        self.rect.x -= self.speed
 
     def move_right(self):
-        self.movepos[0] = self.movepos[0] + (self.speed)
+        self.rect.x += self.speed
 
     def move_up(self):
-        self.movepos[1] = self.movepos[1] - (self.speed)
+        self.rect.y -= self.speed
     
     def move_down(self):
-        self.movepos[1] = self.movepos[1] + (self.speed)
+        self.rect.y += self.speed        
 
     def shoot(self):
         print('pew pew')
 
-    def update(self, dt):
-        newpos = self.rect.move(self.movepos)
-        if self.area.contains(newpos):
-            self.rect = newpos
-        pygame.event.pump()
+    def get_pos(self):
+        return (self.rect.x, self.rect.y)
+
+    # def update(self, dt):
+    # #     pass
+    #     # newpos = self.rect.move(self.center)
+    #     # if self.area.contains(newpos):
+    #     #     self.rect = newpos
+    #     # pygame.event.pump()

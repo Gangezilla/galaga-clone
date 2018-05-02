@@ -10,7 +10,6 @@ class Application:
     def __init__(self):
         self.going = True
         pygame.init()
-        print('init')
         self.screen = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
         self.color_bg = pygame.Color("gray")
@@ -30,7 +29,6 @@ class Application:
             Enemy(pos, self.all_sprites, self.enemies)
 
     def run(self):
-        print('run')
         while self.going:
             dt = self.clock.tick(60) / 1000
             self.handle_events()
@@ -43,27 +41,31 @@ class Application:
         pygame.display.flip()
 
     def run_logic(self, dt):
+        # mouse_pressed = pygame.mouse.get_pressed()
+        keys = pygame.key.get_pressed()
         self.all_sprites.update(dt)
         self.bullet_timer -= dt
-        # if self.bullet_timer <= 0:
-        # hits = pg.sprite.groupcollide(self.enemies, self.bullets, False, True)
-        # for enemy, bullet_list in hits.items():
-        #     for bullet in bullet_list:
-        #         enemy.health -= bullet.damage
+
+        if self.bullet_timer <= 0:
+            self.bullet_timer = 0
+            if keys[K_SPACE]:
+                Bullet(self.player.get_pos(), self.all_sprites, self.bullets)
+                self.bullet_timer = .1
+
+        hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
+        for enemy, bullet_list in hits.items():
+            for bullet in bullet_list:
+                enemy.health -= bullet.damage
 
 
     def handle_events(self):
+        keys = pygame.key.get_pressed() # keys shows you what is being pressed when it gets called.
         for event in pygame.event.get():
-            keys = pygame.key.get_pressed() # keys shows you what is being pressed when it gets called.
             if event.type == pygame.QUIT:
                 self.going = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE: self.going = False
-                if event.key == pygame.K_LEFT: self.player.move_left()
-                if event.key == pygame.K_RIGHT: self.player.move_right()
-                if event.key == pygame.K_UP: self.player.move_up()
-                if event.key == pygame.K_DOWN: self.player.move_down()
-                if keys[K_SPACE]: self.player.shoot()
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                    self.player.movepos = [0,0]
+        if keys[pygame.K_ESCAPE]: self.going = False
+        if keys[pygame.K_LEFT]: self.player.move_left()
+        if keys[pygame.K_RIGHT]: self.player.move_right()
+        if keys[pygame.K_UP]: self.player.move_up()
+        if keys[pygame.K_DOWN]: self.player.move_down()
+        # if keys[K_SPACE]: self.player.shoot()
