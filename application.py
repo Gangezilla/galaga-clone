@@ -19,14 +19,36 @@ class Application:
         self.bullets = pygame.sprite.Group()
         self.player_sprite = pygame.sprite.Group()
 
-        player_pos = (100, 100)
+        player_pos = (400, 500)
         self.player = Player(player_pos, self.all_sprites, self.player_sprite)
         self.bullets = pygame.sprite.Group()
         self.bullet_timer = .1
+        
+        self.enemyObjects = []
 
-        for i in range(15):
-            pos = (random.randrange(30, 750), random.randrange(500))
-            Enemy(pos, self.all_sprites, self.enemies)
+        enemy_positions = [
+            (108, 30),
+            (246, 30),
+            (384, 30),
+            (522, 30),
+            (660, 30),
+            (54, 90),
+            (192, 90),
+            (330, 90),
+            (468, 90),
+            (606, 90),
+            (744, 90),
+            (108, 150),
+            (246, 150),
+            (384, 150),
+            (522, 150),
+            (660, 150),
+        ]
+
+        for enemy in range(len(enemy_positions)):
+            pos = enemy_positions[enemy]
+            enemyObj = Enemy(pos, self.all_sprites, self.enemies)
+            self.enemyObjects.append(enemyObj)
 
     def run(self):
         while self.going:
@@ -41,7 +63,6 @@ class Application:
         pygame.display.flip()
 
     def run_logic(self, dt):
-        # mouse_pressed = pygame.mouse.get_pressed()
         keys = pygame.key.get_pressed()
         self.all_sprites.update(dt)
         self.bullet_timer -= dt
@@ -57,6 +78,9 @@ class Application:
             for bullet in bullet_list:
                 enemy.health -= bullet.damage
 
+        for enemy in range(len(self.enemyObjects)):
+            self.enemyObjects[enemy].shuffle()
+
 
     def handle_events(self):
         keys = pygame.key.get_pressed() # keys shows you what is being pressed when it gets called.
@@ -68,4 +92,3 @@ class Application:
         if keys[pygame.K_RIGHT]: self.player.move_right()
         if keys[pygame.K_UP]: self.player.move_up()
         if keys[pygame.K_DOWN]: self.player.move_down()
-        # if keys[K_SPACE]: self.player.shoot()
