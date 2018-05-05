@@ -16,12 +16,12 @@ class Application:
 
         self.all_sprites = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
-        self.bullets = pygame.sprite.Group()
+        self.player_bullets = pygame.sprite.Group()
         self.player_sprite = pygame.sprite.Group()
 
         player_pos = (400, 500)
         self.player = Player(player_pos, self.all_sprites, self.player_sprite)
-        self.bullets = pygame.sprite.Group()
+        self.enemy_bullets = pygame.sprite.Group()
         self.bullet_timer = .1
         
         self.enemyObjects = []
@@ -70,16 +70,28 @@ class Application:
         if self.bullet_timer <= 0:
             self.bullet_timer = 0
             if keys[K_SPACE]:
-                Bullet(self.player.get_pos(), self.all_sprites, self.bullets)
+                Bullet(self.player.get_pos(), False, self.all_sprites, self.player_bullets)
                 self.bullet_timer = .1
 
-        hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
-        for enemy, bullet_list in hits.items():
+        player_hits = pygame.sprite.groupcollide(self.enemies, self.player_bullets, False, True)
+        for enemy, bullet_list in player_hits.items():
             for bullet in bullet_list:
                 enemy.health -= bullet.damage
 
+        enemy_hits = pygame.sprite.groupcollide(self.player_sprite, self.enemy_bullets, False, True)
+        for player, bullet_list in enemy_hits.items():
+            for bullet in bullet_list:
+                player.take_hit(bullet.damage)
+
+        # remainingEnemies = next(filter(lambda x: x.health > 0, self.enemies))
+        # self.enemies = remainingEnemies
+        self.enemy_logic()
+
+    def enemy_logic(self):
         for enemy in range(len(self.enemyObjects)):
             self.enemyObjects[enemy].shuffle()
+            shootingEnemy = random.choice(self.enemyObjects)
+            Bullet(shootingEnemy.get_pos(), True, self.all_sprites, self.enemy_bullets)
 
 
     def handle_events(self):

@@ -30,4 +30,6 @@ class Enemy(pygame.sprite.Sprite):
             self.shuffle_pos -= 1
         if self.shuffle_pos == -5:
             self.shuffle_direction = 'right'
-            
+
+    def get_pos(self):
+        return (self.rect.x + 25, self.rect.y + 35)

@@ -4,14 +4,19 @@ from pygame.locals import *
 
 class Bullet(pygame.sprite.Sprite):
 
-  def __init__(self, pos, *sprite_groups):
+  def __init__(self, pos, isEnemy, *sprite_groups):
     BULLET_IMG = pygame.Surface((9, 15))
-    BULLET_IMG.fill(pygame.Color('aquamarine2'))
     super().__init__(*sprite_groups)
     self.image = BULLET_IMG
     self.rect = self.image.get_rect(center=pos)
     self.pos = pygame.math.Vector2(pos)
-    self.vel = pygame.math.Vector2(0, -450)
+    if isEnemy:
+      self.vel = pygame.math.Vector2(0, 450)
+      BULLET_IMG.fill(pygame.Color('red'))
+    else:
+      self.vel = pygame.math.Vector2(0, -450)
+      BULLET_IMG.fill(pygame.Color('aquamarine2'))
+      
     self.damage = 10
 
   def update(self, dt):
